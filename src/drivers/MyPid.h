@@ -39,6 +39,8 @@ class PIDimp : public PIDBowler
   // constructor taking in the hardware objects
   PIDimp(Servo * myServo, AS5050 * myEncoder, AnalogIn * myLoadCell);
   
+  void updateTorque();
+
   // Functions inherited from PIDBowler
   float getPosition();
   void setOutputLocal(float);
@@ -48,11 +50,12 @@ class PIDimp : public PIDBowler
   void MathCalculationVelocity(float);
   PidLimitEvent * checkPIDLimitEvents();
   float getMs();
-  
+  float loadCellValue_u16;
   // Class public attributes
   AS5050 * encoder;             // list of encoders
   Servo * servo;                // list of servo motors
   AnalogIn * loadCell;          // list of load cells
+  float loadCellValue = 0.0;
 
   //!FIXME is there a reason why this needs is public?
   double gravityCompTerm;
@@ -62,6 +65,7 @@ class PIDimp : public PIDBowler
   float runningValues[(int)SENSOR_SUM];
   float runningTotal;
   int runningTotalIndex;
+
 };
 
 #endif

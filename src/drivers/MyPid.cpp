@@ -14,6 +14,18 @@ PIDimp::PIDimp(Servo * myServo, AS5050 * myEncoder, AnalogIn * myLoadCell )
     runningValues[i]=0;
 }
 
+void PIDimp::updateTorque(){
+	float samples_avg;
+	float samples_u16_avg;
+	int avg_samples = 64;
+	for (int i=0; i<avg_samples; i++){
+		samples_avg += loadCell->read();
+		samples_u16_avg += loadCell->read_u16();
+	}
+
+	loadCellValue = samples_avg/avg_samples;
+	loadCellValue_u16 = samples_u16_avg/avg_samples;
+}
 
 // Return the current position of the system
 float PIDimp::getPosition( )

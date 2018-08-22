@@ -16,7 +16,7 @@ HIDSimplePacket::HIDSimplePacket(){
 */
  bool HIDSimplePacket::isPacketAvailible(){
    if( hid->readNB(&recv_report)){
-     //printf("\nReceived packet");
+     printf("\nReceived packet");
 
      return true;
    }

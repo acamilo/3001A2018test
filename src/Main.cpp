@@ -38,9 +38,14 @@ void runPid() {
 	// update all positions fast and together
 	for (int i = 0; i < DOFs; i++)
 		pid[i]->updatePosition();
+	// Read load cells after SPI comms.
+	for (int i = 0; i < DOFs; i++)
+		pid[i]->updateTorque();
+
 	// next update all control outputs
 	for (int i = 0; i < DOFs; i++)
 		pid[i]->updateControl();
+
 }
 
 /*
@@ -156,14 +161,16 @@ int main() {
 	 *            You can disable these statements at compile time, by commenting out
 	 *            the DEBUG macro at the beginning of this source file.
 	 */
-
+	int pr = 0;
 	while (1) {
 
 		coms.server();
 
 		// The following code prints out debug statements.
 #ifdef DEBUG_
+
 // print encoder values for each joint
+		if(pr>10000){
 			printf("\r\nEncoder Value = %f , %f , %f", pid[0]->GetPIDPosition(),
 					pid[1]->GetPIDPosition(), pid[2]->GetPIDPosition());
 
@@ -172,9 +179,11 @@ int main() {
 					pid[1]->state.SetPoint, pid[2]->state.SetPoint);
 			printf(" Gravity = %f , %f , %f", pid[0]->gravityCompTerm,
 								pid[1]->gravityCompTerm, pid[2]->gravityCompTerm);
-			printf(" Load Value = %f , %f , %f", pid[0]->loadCell->read(),
-					pid[1]->loadCell->read(), pid[2]->loadCell->read());
-
+			printf(" Load Value = %f , %f , %f", pid[0]->loadCellValue_u16*1.0,
+					pid[1]->loadCellValue_u16*1.0, pid[2]->loadCellValue_u16*1.0);
+			pr = 0;
+		}
+		pr++;
 #endif // DEBUG
 
 	}
